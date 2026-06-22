@@ -1,7 +1,6 @@
+- # What does Major Incidents tell us about knowledge gaps ?
+# Why do incidents response or resolution time matters for production ?
 
-
-1) What does Major Incidents tell us about knowledge gaps ?
-2) Why do incidents response or resolution time matters for production ?
    
 **A maintenance symptom kept continued resulting in huge impact to Application**
 
