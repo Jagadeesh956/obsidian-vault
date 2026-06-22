@@ -10,7 +10,12 @@
 
 *A Java application running on multiple VMs started throwing errors as "cannot UPSERT on a read only DB" , from Postgres server.  In simple terms , an application is trying to send a DB request to a server which is not a primary that can accepts writes .* 
 
-What does support team do ? 
-Open a bridge , page Database Operations . 
+**15min later when the alert triggered to slack ....!** 
+
+Support team opened a bridge , page Database Operations to get the reason for sudden error , resolution needed to solve it . 
+
+DB team validates health of the cluster , confirms everything looking good and no changes at Database end . Application team asks multiple questions "what causes this error ", "why it is happening without any change" and so on....
+
+Someone asks DB team to see where the connections are going to , while 
 
 
