@@ -1,2 +1,4 @@
 
-How exactly does kubernetes networking 
+How exactly does kubernetes networking work ?
+
+The magic behind kubernetes network is 
