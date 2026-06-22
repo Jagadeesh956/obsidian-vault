@@ -69,12 +69,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "blogs/Untitled.md",
+                "file": "blogs/Production Experiences.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Untitled"
+              "title": "Production Experiences"
             }
           }
         ],
@@ -242,10 +242,10 @@
       "obsidian-excalidraw-plugin:New drawing": false
     }
   },
-  "active": "1e637a07c2582c7e",
+  "active": "2ae50a0de937707f",
   "lastOpenFiles": [
     "blogs/java-oom.md",
-    "blogs/Untitled.md",
+    "blogs/Production Experiences.md",
     "blogs/Kubernetes Networking.md",
     "claude/CKA vs CKAD - Deep Comparison and CKA Study Guide 1.md",
     "claude/Amazon Engineering Organization - Deep Dive 1.md",
