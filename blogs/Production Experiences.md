@@ -3,8 +3,6 @@
 1) What does Major Incidents tell us about knowledge gaps ?
 2) Why do incidents response or resolution time matters for production ?
    
-
-
 **A maintenance symptom kept continued resulting in huge impact to Application**
 
 *A Java application running on multiple VMs started throwing errors as "cannot UPSERT on a read only DB" , from Postgres server.  In simple terms , an application is trying to send a DB request to a server which is not a primary that can accepts writes out of a 3 node DB cluster.* 
@@ -70,7 +68,7 @@ That answers why application nodes started connecting to some random server and 
 The entire analysis of this issue took around 4 hours of time from various teams with multiple arguments between teams protecting themself from no issue at their end while technical glitch resides at multiple places to avoid this situation from happening again . 
 
 
-**MY** ***TECHNICAL VIEW 
+**MY TECHNICAL VIEW** 
 
  * A JVM process kept connecting to the same backend server without doing active DNS lookup as an active TCP connection exists , resulted in continuous failures at application layer . 
  * Patroni status check timegap [ 30sec ] doesn't match with LoadBalancer Health Check frequency [ 5 sec ] which caused  a round robin DNS results impacting DB VIPs. 
