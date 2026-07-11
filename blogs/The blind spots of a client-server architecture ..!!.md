@@ -1,108 +1,113 @@
 ---
-title: "The Blind Spots of a Client-Server Architecture"
+title: "The Blind Spots of a Client-Server Architecture: What I Learned at Work"
 date: 2026-06-22
-tags: [SRE, Observability, Microservices, Reliability, Kubernetes]
-summary: "Why client-side 503s can happen even when app logs look healthy, and how to close observability gaps across LB, ingress, sidecar, and app layers."
+tags:
+  - SRE
+  - Observability
+  - Microservices
+  - Reliability
+  - Kubernetes
+summary: "Simple lessons from real production incidents where client errors did not match app logs."
 ---
 
-## Overview
+## Why I started doubting our dashboards
 
-A server exposing REST APIs and a client consuming them sounds simple.  
-In real production systems, the request path is not just client-to-app.
+In production, I kept seeing this pattern:
 
-In many microservice environments, it looks like this:
+- Client side showed `503 Service Unavailable`
+- App team said: "we do not return 503"
+
+At first, I thought it was a logging bug.
+
+Later I understood the real issue: we were only looking at one part of the path.
+
+---
+
+## The real path is longer than we think
+
+In my projects, request flow is usually:
 
 **Client -> Load Balancer -> Ingress Gateway -> Sidecar Proxy -> App Container**
 
-That path introduces multiple failure points *before* traffic reaches application business logic.
+If we only watch app logs, we miss failures in LB, ingress, and sidecar.
+
+That was my blind spot in the beginning.
 
 ---
 
-## The Blind Spot Problem
+## What I learned from real incidents
 
-Many teams measure request health only from application logs and controller metrics.  
-That creates blind spots when failures happen upstream.
+### 1) App logs alone are not enough
 
-Common scenarios:
+You can have clean app logs and still have user-facing failures.
 
-1. Request fails at security/filter layer, but logging starts only inside the controller.
-2. No distributed tracing; only raw app logs exist, so dropped requests are invisible.
-3. LB/Ingress/Sidecar errors are not correlated with app metrics in one timeline.
+I have seen this many times:
 
-Result: the client receives `503 Service Unavailable`, but the app team says:
+- request blocked before controller logging starts
+- ingress timeout
+- sidecar reset/circuit break
 
-> "We do not even return 503 in our code."
+### 2) "No app errors" does not mean service is healthy
 
-Both statements can be true.
+Some dashboards look great because they only track app-level success.
 
----
+But users still fail on the edge path.
 
-## Questions That Matter in Production
+Now I treat user-side success rate as the main signal.
 
-1. Where exactly did the 503 originate?
-2. How do teams count requests that never reached the app container?
-3. How accurate are availability metrics if upstream failures are excluded?
-4. How can reliability metrics become realistic and decision-worthy?
+### 3) Missing trace IDs slows incident response
 
----
+When IDs are not passed from edge to app, teams waste time arguing where issue is.
 
-## Why 503 Can Happen Without App Code Returning It
+I learned this the hard way on bridge calls.
 
-A 503 can be produced by:
+### 4) Reliability numbers can look better than reality
 
-- Load balancer target health failures
-- Ingress gateway upstream timeout or retry exhaustion
-- Sidecar proxy circuit-breaking due to unhealthy upstream endpoints
-- Infrastructure/network churn before app code execution
+If we ignore LB/Ingress/mesh failures, availability % looks higher than actual user experience.
 
-So if app logs show no 503, it does **not** mean no 503 occurred.
+Now I question any metric that is not end-to-end.
 
 ---
 
-## What to Instrument End-to-End
+## What I changed after these incidents
 
-To eliminate blind spots, instrument each hop in the chain:
+### Better observability across layers
 
-### 1) Load Balancer Layer
-- Target health state transitions
-- Target registration/deregistration events
-- Upstream connect timeouts and reset counts
-- 4xx/5xx split by backend target group
+Now I push for metrics in all layers:
 
-### 2) Ingress Gateway Layer
-- Request count by host/path/status
-- Upstream latency and retry counts
-- Saturation metrics (connections, queue depth)
-- Access logs with trace IDs
+- **LB:** target health changes, backend 5xx
+- **Ingress:** status by path/host, retries, upstream latency
+- **Sidecar:** reset counts, circuit break events
+- **App:** early filter metrics + structured logs
 
-### 3) Sidecar / Service Mesh Layer
-- Per-service success rate, retries, resets
-- Circuit-breaker open/close events
-- TLS/mTLS handshake failures
-- Upstream endpoint membership changes
+### Better incident handling
 
-### 4) Application Layer
-- Request timing from earliest filter/middleware entry point
-- Error classification (auth, dependency timeout, validation, unknown)
-- Structured logs enriched with trace and span IDs
+In incidents, I now ask only 3 things first:
+
+1. Where exactly did failure start?
+2. What evidence do we have right now?
+3. What is the fastest safe action to reduce user impact?
+
+### Better reporting
+
+There should be a better way to document the metrics .
 
 ---
 
-## Practical Reliability Improvements
+## My simple checklist now
 
-- Start request timing before controller methods.
-- Propagate correlation IDs from edge to app and back to client.
-- Build dashboards combining LB + ingress + mesh + app metrics.
-- Alert on full-path error budget burn, not app-only error rates.
-- Add synthetic probes from client perspective for true user-facing health.
+- Start metrics before controller methods.
+- Pass one correlation ID across all hops.
+- Alert on full-path error budget burn.
+- Run synthetic checks from client side.
+- Include upstream dependency behavior in every RCA.
 
 ---
 
-## Final Takeaway
+## Final takeaway
 
-Reliability is not an application-only concern.  
-If observability starts too late in the request lifecycle, teams undercount failures and overestimate availability.
+This was a big mindset change for me:
 
-The key principle:
+> If we start observing too late in the request path, we also start debugging too late.
 
-> Measure the whole request path, not just the code you own.
+Reliability is a full-path job, not just an application-team job.

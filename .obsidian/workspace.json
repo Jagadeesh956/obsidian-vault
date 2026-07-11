@@ -69,12 +69,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "blogs/The blind spots of a client-server architecture ..!!.md",
+                "file": "blogs/The importance of Database Pool size.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "The blind spots of a client-server architecture ..!!"
+              "title": "The importance of Database Pool size"
             }
           }
         ],
@@ -244,14 +244,23 @@
   },
   "active": "2ae50a0de937707f",
   "lastOpenFiles": [
-    "Untitled.md",
-    "blogs/The blind spots of a client-server architecture ..!!.md",
-    "blogs/Production Experiences.md",
     "blogs/java-oom.md",
+    "blogs/The importance of Database Pool size.md",
+    "documentation/Algorithms Foundations - The Complete Beginner Map.md",
+    "documentation/Deciding Coding Patterns by Input Data Type.md",
+    "documentation/Python Packages, Keywords, and SRE Automation (with Shell + Java Comparison).md",
+    "documentation/Python for Automation Interview Prep (Beginner to SRE).md",
+    "documentation/How to Approach a Programming Problem.md",
+    "documentation/How Patterns Fit Problems and Algorithm Complexity.md",
+    "documentation/SRE Interview Panel Guide - Questions and Expected Answers.md",
+    "documents/Solving Programming Problems - From First Principles to Patterns.md",
+    "blogs/Production Experiences.md",
+    "documents",
+    "documentation",
+    "blogs/The blind spots of a client-server architecture ..!!.md",
     "blogs/Kubernetes Networking.md",
     "claude/CKA vs CKAD - Deep Comparison and CKA Study Guide 1.md",
     "claude/Amazon Engineering Organization - Deep Dive 1.md",
-    "Untitled",
     "claude/MultiThreading.md",
     "claude/Amazon Engineering Organization - Deep Dive.md",
     "claude/Remote Companies for Indian Software Engineers.md",
@@ -263,18 +272,10 @@
     "claude/Remote Companies for Indian Software Engineers.md",
     "claude/MAANG Engineering Organizations - Meta Apple Google Microsoft Netflix 1.md",
     "claude/Work Visa Guide - Indian Software Engineers 1.md",
-    "claude/SpringBoot.md",
     "claude/Untitled.canvas",
-    "claude/Engineering Team Operational Models - Complete Guide 1.md",
     "claude/Untitled.canvas",
-    "claude/CKA vs CKAD - Deep Comparison and CKA Study Guide.md",
-    "claude/Engineering Team Operational Models - Complete Guide.md",
-    "claude/MAANG Engineering Organizations - Meta Apple Google Microsoft Netflix.md",
-    "claude/Kubernetes Cluster Architecture - Deep Internals and CKA Troubleshooting.md",
-    "claude/Java OOM.md.md",
     "blogs",
     "claude",
-    "claude/Python-25days.md",
     "Untitled 1",
     "Java World"
   ]

@@ -1,93 +1,107 @@
 ---
-title: "Production Experience: A 4-Hour Incident and What It Taught Us"
+title: "Production Learnings: What a 4-Hour Incident Taught Me"
 date: 2026-06-22
 tags:
   - SRE
   - PostgreSQL
   - JVM
-  - Production
-summary: A real production incident where DB failover behavior, DNS caching, and cross-team knowledge gaps extended MTTR to 4 hours.
+summary: A real incident from work and the practical things I learned from it.
 ---
 
-## Why Major Incidents Reveal Knowledge Gaps
+## Why this one stayed with me
 
-Major incidents are rarely caused by one component alone. They expose:
+I have seen production issues before, but this one really changed how I think.
 
-- Hidden dependencies between infrastructure layers
-- Operational blind spots across teams
-- Weaknesses in runbooks and escalation flow
-- Gaps in shared understanding of platform behavior
-
-This incident is a good example.
-
-## Incident Context
-
-A Java application running on multiple VMs started throwing:
+The app started failing with this error:
 
 > `cannot UPSERT on a read-only DB`
 
-In simple terms, the application was attempting writes on a PostgreSQL node that was not the active primary in a 3-node cluster.
+At first, it looked like a normal DB issue. But fixing it and understanding it took almost 4 hours.
 
-Within 15 minutes, alerts crossed 10K failures in 5-minute intervals and a support bridge was opened.
+---
 
-## What Happened During Investigation
+## What happened
 
-### T+0 to T+1 hour
+- A Java app was trying to write to a PostgreSQL cluster.
+- Somehow writes were going to non-primary nodes.
+- Errors increased very fast.
+- In about 15 minutes, alerts crossed 10K failures.
 
-- DB team validated cluster health and reported no active DB-side changes
-- Application team noted they had seen similar transient errors during primary switches
-- DB team observed open connections on secondary/remote servers
-- Clearing those connections did not solve the issue
+A big bridge call started. Many teams joined:
 
-Core question remained:
+- App support
+- DB team
+- Load balancer team
+- Infra team
+- Downstream teams
 
-**Why was the application suddenly connecting to non-primary nodes?**
+Even with many people, we still took time to get to the real reason.
 
-### T+1 to T+2 hours
+---
 
-- Additional teams joined: Load Balancer, Infra Ops, downstream application owners
-- Load balancer team observed VIP pool instability and intermittent health-check failures
-- Similar incidents were reported by other applications
-- System returned to partial BAU at times, then regressed
+## What I learned from this incident
 
-At this stage, this was treated as an enterprise-level DB incident without a clear root cause.
+### 1) "DB looks healthy" does not mean users are fine
 
-### T+2 to T+3 hours
+One team saw the DB as healthy, but app errors were still going up.
 
-- Errors crossed 3M at application layer
-- DB logs showed `Postgres process shutting down` around incident start on master nodes
-- Engineering suggested restarting one impacted app instance
-- Restart worked immediately on that instance
+Big learning for me: always check the full request path, not one layer.
 
-A temporary resolution was identified:
+### 2) DNS + old connections can keep failures going
 
-**Restart impacted application instances**
+Even after LB health came back, JVM processes kept using old TCP connections.
 
-## Key Root Cause Insights
+So traffic still hit wrong nodes for some time.
 
-DB SME analysis clarified the sequence:
+That is why failures continued longer than we expected.
 
-1. When load balancer health checks failed, DNS lookups for DB VIP began round-robin behavior across cluster nodes.
-2. Application connections landed on read-only nodes, causing UPSERT failures.
-3. Even after health checks recovered, JVM processes reused existing TCP connections and did not force fresh DNS resolution.
-4. Patroni leader checks (30s interval) and LB health checks (5s interval) had a timing mismatch during transient restart windows.
+### 3) Different check intervals can cause short bad windows
 
-## Why Resolution Time Matters in Production
+Patroni checks and LB checks were running on different timing.
 
-This issue lasted ~4 hours. A focused restart/runbook action could have reduced MTTR significantly.
+That timing difference created small windows where routing was unstable.
 
-Longer incident duration caused:
+Now I always check interval alignment in reviews.
 
-- Large-scale user-facing errors
-- Multi-team paging and escalation fatigue
-- Communication overhead (50-100 people on bridge)
-- Delayed root-cause convergence due to parallel assumptions
+### 4) Fast fixes must be written in runbooks
 
-## My Technical Takeaways
+A controlled restart of impacted app instances helped quickly.
 
-- **Connection reuse + DNS caching** in JVM can prolong failures after backend topology changes.
-- **Health-check interval mismatch** (Patroni vs LB) can create instability windows.
-- **Cross-team knowledge gaps** can dominate MTTR more than pure technical failure.
-- **Runbooks should include validated fast mitigations** (e.g., controlled app restart) while root cause analysis continues.
+We found this action too late in the incident.
 
-.
+Now I make sure runbooks include:
+
+- quick safe actions to reduce impact
+- and separate steps for deeper root cause work
+
+### 5) MTTR is also about people and process
+
+The issue was technical, yes. But the long duration was also because of:
+
+- unclear ownership at some points
+- repeated questions across teams
+- slow decision on mitigation
+
+So this was not only a systems lesson. It was also a teamwork lesson.
+
+---
+
+## What I changed in my daily work
+
+After this incident, I started doing these more strictly:
+
+1. Track LB + ingress + app together, not app only.
+2. Define bridge roles early (incident lead, technical driver, updates owner).
+3. Keep a list of known safe mitigations.
+4. Call out control-plane timing mismatch early.
+5. Write post-incident notes focused on learning, not blame.
+
+---
+
+## Final thought
+
+For me, the biggest lesson is simple:
+
+> Production reliability is not just about code. It is about how systems behave under stress and how teams respond in real time.
+
+This incident made me sharper as an engineer and much calmer during long bridge calls.
