@@ -2,12 +2,12 @@
 
 > Back to [[Networking Protocols - Master Index (OSI 7-Layer Model)]]
 
-Layer 2 is where **frames** and **addressing within a local segment** (MAC addresses) first appear. Its job: move a frame reliably between two directly-connected nodes (or nodes on the same shared/switched segment), and arbitrate who gets to transmit when multiple devices share a medium.
+Layer 2 is where **frames** and **addressing within a local segment** (MAC addresses) first appear. Its job: move a frame reliably between two directly-connected nodes (or nodes on the same shared/switched segment), and arbitrate who gets to transmit when multiple devices share a medium .
 
 ## Ethernet (IEEE 802.3 MAC layer)
 
 - **Problem solved:** Layer 1 gives you bits on a wire; something has to decide *whose* bits they are and detect collisions. Original Ethernet (1980, Xerox PARC — Bob Metcalfe) ran on a shared coax bus where every device saw every frame.
-- **How it works:** Frames carry source/destination **MAC addresses** (48-bit, burned into the NIC, globally unique via IEEE-assigned OUI prefixes), an EtherType field, payload, and a CRC checksum (FCS) for error detection. Early Ethernet used **CSMA/CD** (Carrier Sense Multiple Access with Collision Detection) — listen before transmitting, and if a collision is detected mid-transmission, back off and retry after a random delay.
+- **How it works:** Frames carry source/destination **MAC addresses** (48-bit, burned into the NIC, globally unique via IEEE-assigned OUI prefixes), an EtherType field, payload, and a CRC checksum (FCS) for error detection. Early Ethernet used **CSMA/CD** (Carrier Sense Multiple Access with Collision Detection) — listen before transmitting, and if a collision is detected mid-transmission, back off and retry after a random delay .
 - **Advantages:** Simple, cheap, scaled from 10 Mbps to 400 Gbps without changing the frame format.
 - **Disadvantages:** CSMA/CD degrades badly under load (collisions increase quadratically with more active senders) — this problem is why switches (not hubs) became universal: a switch gives every port its own **collision domain**, making CSMA/CD irrelevant on modern full-duplex switched Ethernet.
 - **Owner:** IEEE 802.3.
