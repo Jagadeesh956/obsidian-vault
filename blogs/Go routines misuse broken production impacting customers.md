@@ -1,60 +1,165 @@
+---
+title: "Go Routine Retry Misuse: A Production Incident That Hit Customers"
+date: 2026-07-25
+tags:
+  - SRE
+  - Go
+  - Kubernetes
+  - Incident Management
+  - Production Learnings
+summary: "A real incident where a retry bug in a Go SDK caused heavy load, affected shared infra, and impacted customer-facing traffic."
+---
 
+## Why I am writing this
 
+This is one of the most stressful incidents I have seen.
 
-We have a in house platform called Enterprise Configuration Management that manages configuration for various micro services to update the consuming services dynamically whenever someone changes configuration in version control systems like git , bitbucket . 
+It looked like a Safekey issue first. Then an Istio issue. Then cloud issue.
+In the end, the trigger was a retry bug in a Go SDK path for SSE.
 
+Big lesson: in distributed systems, the first symptom is often far away from the real source.
 
-As the platform exposes REST API endpoints for any microservice to consume the config it needs, the platform acts similar to spring cloud consul which requires minimal configuration changes in the properties file along with many other features. 
+---
 
-Since this platform has various consumers that run their services in different tech stack like Go, Java , Python and Node.js ..... the platform provider decided to provide SDKs for each of these programming languages for easy interaction when the dependencies modules are imported and implemented by the consumers abstracting the calls to platform and periodically updating the config if changes were detected . 
+## Quick system context
 
+We have an internal platform called ECM (Enterprise Configuration Management).
 
-As part of providing a feature called SSE [ server sent events ] , instead of client SDKs periodically fetching config every 2min in the Go SDK, the developer pushed a change that infinitely creates a go client [ a routine ] to connect to the platform in case of failure with retries . 
+- Services use ECM to pull config updates.
+- ECM provides SDKs for multiple languages (Go, Java, Python, Node.js).
+- A new SSE feature was added so clients can receive config updates continuously.
 
-As the product is released , after few days a consumer from loyalty organization implemented the SSE and released to production on some X date , deployed the service into a K8s cluster provided by organization in private cloud  . 
+The Go SDK change had logic that could keep creating clients/routines forever on failures.
 
+---
 
-**Time :-** T 
+## What happened (timeline style)
 
-On the other side of story, a major SRB [ service restoration bridge ] arised from a very critical platorm called safekey [ OTP sender ] built for amex client transaction verification reporting impacts intermittently by multiple customers .
+### T
 
-**"The ball is in safekey court to find out RCA"**
+A major bridge started for Safekey (OTP sender) due to intermittent customer impact.
 
-**Time :-** T + 2 hours 
-The safekey team has no idea why it's happening since they haven't deployed any changes and started working with all dependent teams including the cloud operations , after few hours of debugging the cloud operations found that the istio-gateway pods are reporting liveness failures in a specific pattern matching to safekey failures  . As the gateway is shared by all the services deployed in that cluster , cloud operation teams are unable to identify what exactly is causing those failures. 
+Safekey team had no recent deployment, so debugging started with dependent teams.
 
-**"The ball is in cloudOps queue to find the RCA "**
+### T + 2 hours
 
-**Time :-** T + 4 hours 
+Cloud operations found Istio gateway pods showing liveness failures, pattern matching Safekey impact windows.
 
-Time kept moving , many teams were involved including vendor for service mesh, OCP etc to help the cloud ops to identify the issue. Multiple leaders joined the call as it's impacting business . After 18+ hours of debugging , the cloud SRE team identified that the ECM platform service that is hosted on same cluster is seeing same pattern of crashloop backoff for the pods in the zones where safekey failures , istio-gateway pods are reporting . 
+Since gateway is shared infra, it was not obvious which service was causing pressure.
 
-**Time :-** T + 10 hours 
-An engineer tried to scale down all the pods of ECM in a specific zone to 0 and safekey failures stopped . "The eureka moment", however there is no correlation between safekey and ECM . 
-ECM support was also reporting crashloop backoff since same time as safekey failures to cloud ops , however it was not cared much since it's not impacting entire platform or very intermittentlty happening . "No one really thought of correlated events ".
+Many teams were involved including leaders , vendors for service mesh , OCP etc to identify the issue . 
 
-**"The ball is in ECM Ops queue to find the RCA"**
-**Time :-**** T + 15 hours 
-ECM support(our team ) got paging at 12AM , showing the evidence of safekey failures stopped after scaling down ECM Pods on a specific zone . As we are sure that it could happen only from external system calling us with huge number of requests, we were fighting back with cloud ops to not blame our system and figure out which system is bombarding the requests to ECM . [ platform side logging was poor on SSE related calls ], never shows in traffic similar to usual rest api calls.  After so much of discussion we convinced cloud ops to isolate our traffic to a specific zone and enable the other for safekey to debug further on this issue.
+Teams tried to observe a pattern or isolate it to a specific zone if any infra layer is the culprit . 
 
-**Time :-** T+ 16 hours 
-We tried to see anything that can be derived from our logs , I found that SSE related failure logs are reporting way huge sometimes [ level ERROR in Opensearch dashboard manual filteration ].
-Somehow we got to know the only client who has been integrated with SSE feature and they were pulled to call , they confirmed that a change was deployed a day before enabling this feature provided by ECM . 
+### T + 10 hours
 
-**"The ball is in loyalty team  queue to find the RCA"**
+Cloud SRE noticed ECM pods in some zones were also crashlooping in the same pattern.
 
+One engineer scaled ECM pods in a problem zone to 0.
 
-**Time :-** T+ 18 hours
+**Safekey failures stopped immediately.**
 
-The loyalty team reviewed the logs and confirmed they are seeing many failures calling ECM and a specific log saying "ECM client creation... " keeps on printing infinite times.
+That was the first strong correlation.
 
-As the logic behind this client creation is provided by ECM , the ball came back to ECM court for root cause . 
+### T + 15 hours
 
+Our ECM support team got paged around midnight.
 
-All the teams were suggesting to backout the loyalty change that enabled SSE, however  the internal policies within loyalty domain are different to move a production change with many stages of testing , UAT signoff and validation etc... This has killed lot of time as well to bring in respective leaders onto call .
+At first, we pushed back because direct correlation was not obvious and SSE traffic visibility in ECM logs was weak.
 
-Once the change is reverted , loyalty team asked our ECM platform team to explain the root cause for those infinite client creations and our dev team confirmed it due to enormous retries happening for go routines [ a major retry bug ].
+We asked cloud ops to isolate traffic by zone so we could narrow it better.
 
-After few days , the dev team fixed the bug to exponentially retry for SSE and then fallback to usual rest calls in case of all failures . I personally took the task to test this feature thoroughly , by leveraging docker compose to create many clients in parallel and bring down the ECM pod that is connected for SSE etc and documented results before explaining the fix to leaders and other teams etc... 
+### T + 16 hours
 
-"This was the biggest learning production incident for me so far in terms of customer impacts , distributed systems and what not . "
+I reviewed logs in OpenSearch and noticed unusually high SSE-related failures.
+
+We identified the only consumer using the new SSE feature: Loyalty team.
+
+They confirmed they had enabled SSE in production the previous day.
+
+### T + 18 hours
+
+Loyalty logs showed repeated client creation messages and repeated failures when calling ECM.
+
+Now root cause shifted back to SDK behavior provided by ECM.
+
+Eventually, Loyalty reverted the SSE enablement change.
+
+Incident stabilized.
+
+---
+
+## Root cause (simple version)
+
+In Go SDK SSE flow:
+
+- on connection failure, retry logic kept creating routines/clients repeatedly
+- retries were not controlled properly
+- this created heavy repeated pressure
+- shared infra (Istio gateway and related components) became unstable
+- customer-facing application (Safekey) saw impact as a downstream effect
+
+So customer pain showed up in one platform, but source load came from another path.
+
+---
+
+## Why this took so long
+
+This is what slowed us down:
+
+1. Shared infrastructure made blame direction noisy.
+2. Early evidence was symptom-based, not source-based.
+3. SSE observability was weaker than normal REST path visibility.
+4. Multiple teams were debugging in parallel with partial context.
+5. Rollback in consumer domain took organizational time.
+
+---
+
+## What we changed after incident
+
+### Engineering fixes
+
+- Go SDK retry logic was fixed.
+- Retries were moved to exponential backoff pattern.
+- Fallback to regular REST polling was added when SSE repeatedly fails.
+
+### Validation improvements
+
+I personally tested the fix with failure simulation:
+
+- many parallel clients through Docker Compose
+- forced pod failures/disconnections
+- reconnection behavior checks
+- stability checks before sign-off
+
+### Process improvements
+
+- Better correlation checks for "unrelated" platform events
+- More focus on shared infra blast-radius thinking
+- Better logging requirements for SSE path
+- Stronger incident ownership transitions
+
+---
+
+## My personal learnings from this incident
+
+1. Retry logic is production-critical code. Bad retry behavior can break healthy systems.
+2. Shared platform incidents need correlation-first debugging, not team-first debugging.
+3. "No direct dependency" does not mean "no impact path" in distributed systems.
+4. Observability gaps in new features (like SSE) can heavily increase MTTR.
+5. Fast rollback options in consuming teams are as important as fixes in provider teams.
+
+---
+
+## Final takeaway
+
+This incident changed how I review resilience features.
+
+Now whenever I see reconnection/retry logic, I ask first:
+
+- What is the worst-case retry behavior?
+- How do we cap it?
+- What is the fallback?
+- How will we observe it in production?
+
+Because one retry bug in one SDK can become a customer incident somewhere else.

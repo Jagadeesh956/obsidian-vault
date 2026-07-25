@@ -69,12 +69,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "blogs/Go routines misuse broken production impacting customers.md",
+                "file": "blogs/Production Experiences.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Go routines misuse broken production impacting customers"
+              "title": "Production Experiences"
             }
           }
         ],
@@ -244,6 +244,8 @@
   },
   "active": "2ae50a0de937707f",
   "lastOpenFiles": [
+    "blogs/Kubernetes Networking.md",
+    "2025-01-21.md",
     "blogs/java-oom.md",
     "blogs/Go routines misuse broken production impacting customers.md",
     "Untitled.md",
@@ -261,7 +263,6 @@
     "documents",
     "documentation",
     "blogs/The blind spots of a client-server architecture ..!!.md",
-    "blogs/Kubernetes Networking.md",
     "claude/CKA vs CKAD - Deep Comparison and CKA Study Guide 1.md",
     "claude/Amazon Engineering Organization - Deep Dive 1.md",
     "claude/MultiThreading.md",
@@ -271,7 +272,6 @@
     "claude/Welcome 1.md",
     "claude/MultiThreading 1.md",
     "claude/Python-25days 1.md",
-    "claude/Kubernetes Cluster Architecture - Deep Internals and CKA Troubleshooting 1.md",
     "claude/Untitled.canvas",
     "claude/Untitled.canvas",
     "blogs",
