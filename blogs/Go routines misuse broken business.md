@@ -11,8 +11,10 @@ Since this platform has various consumers that run their services in different t
 
 As part of providing a feature called SSE [ server sent events ] , instead of client SDKs periodically fetching config every 2min in the Go SDK, the developer pushed a change that infinitely creates a go client [ a routine ] to connect to the platform in case of failure with retries . 
 
-As the product is released , after few days a consumer implemented the SSE and released to production on some X date  . 
+As the product is released , after few days a consumer implemented the SSE and released to production on some X date , deployed the service into a K8s cluster provided by organization in private cloud  . 
 
 
 
-On the other side of  
+On the other side of story, a major SRB [ service restoration bridge ] arised from a very critical platorm called safekey [ OTP sender ] built for amex client transaction verification reporting impacts intermittently by multiple customers .
+
+The safekey team has no idea why it's happening since they haven't deployed any changes and started working with all dependent teams including the cloud operations , after many hours of debugging the cloud operations found 
