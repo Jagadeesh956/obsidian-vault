@@ -17,4 +17,6 @@ As the product is released , after few days a consumer implemented the SSE and r
 
 On the other side of story, a major SRB [ service restoration bridge ] arised from a very critical platorm called safekey [ OTP sender ] built for amex client transaction verification reporting impacts intermittently by multiple customers .
 
-The safekey team has no idea why it's happening since they haven't deployed any changes and started working with all dependent teams including the cloud operations , after many hours of debugging the cloud operations found 
+The safekey team has no idea why it's happening since they haven't deployed any changes and started working with all dependent teams including the cloud operations , after few hours of debugging the cloud operations found that the istio-gateway pods are reporting liveness failures in a specific pattern matching to safekey failures  . As the gateway is shared by all the services deployed in that cluster , cloud operation teams are unable to identify what exactly is causing those failures. 
+
+Time kept moving , many teams were involved including vendor for service mesh, OCP etc to help the cloud ops to identify the issue. Multiple leaders joined the call as it's impacting business . After 18+ hours of debugging , the cloud SRE team identified that the ECM platform service that is hosted on same cluster is seeing same pattern of crashloop backoff for the pods in the zones where safekey failures , 
