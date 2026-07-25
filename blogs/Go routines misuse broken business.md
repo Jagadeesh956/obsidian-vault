@@ -46,5 +46,13 @@ Somehow we got to know the only client who has been integrated with SSE feature 
 
 **Time :-** T+ 18 hours
 
-The loyalty team reviewed the logs and confirmed they are seeing many failures calling ECM and a specific log saying "client creation "
+The loyalty team reviewed the logs and confirmed they are seeing many failures calling ECM and a specific log saying "ECM client creation... " keeps on printing infinite times.
 
+As the logic behind this client creation is provided by ECM , the ball came back to ECM court for root cause . 
+
+
+All the teams were suggesting to backout the loyalty change that enabled SSE, however  the internal policies within loyalty domain are different to move a production change with many stages of testing , UAT signoff and validation etc... This has killed lot of time as well to bring in respective leaders onto call .
+
+Once the change is reverted , loyalty team asked our ECM platform team to explain the root cause for those infinite client creations and our dev team confirmed it due to enormous retries happening for go routines [ a major retry bug ].
+
+After few days , the dev team fixed the bug to exponentially
