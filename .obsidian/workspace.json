@@ -244,6 +244,8 @@
   },
   "active": "1e637a07c2582c7e",
   "lastOpenFiles": [
+    "documentation/OSI Layer 7 - Application Layer Protocols and Technologies.md",
+    "documentation/OSI Layer 6 - Presentation Layer Protocols and Technologies.md",
     "documentation/OSI Layer 5 - Session Layer Protocols and Technologies.md",
     "documentation/OSI Layer 4 - Transport Layer Protocols and Technologies.md",
     "documentation/OSI Layer 3 - Network Layer Protocols and Technologies.md",
@@ -270,8 +272,6 @@
     "documents",
     "documentation",
     "claude/CKA vs CKAD - Deep Comparison and CKA Study Guide 1.md",
-    "claude/Amazon Engineering Organization - Deep Dive 1.md",
-    "claude/MultiThreading.md",
     "claude/Untitled.canvas",
     "claude/Untitled.canvas",
     "blogs",
