@@ -55,4 +55,6 @@ All the teams were suggesting to backout the loyalty change that enabled SSE, ho
 
 Once the change is reverted , loyalty team asked our ECM platform team to explain the root cause for those infinite client creations and our dev team confirmed it due to enormous retries happening for go routines [ a major retry bug ].
 
-After few days , the dev team fixed the bug to exponentially
+After few days , the dev team fixed the bug to exponentially retry for SSE and then fallback to usual rest calls in case of all failures . I personally took the task to test this feature thoroughly , by leveraging docker compose to create many clients in parallel and bring down the ECM pod that is connected for SSE etc and documented results before explaining the fix to leaders and other teams etc... 
+
+"This was the biggest learning production incident for me so far in terms of customer impacts , distributed systems and what not . "

@@ -69,12 +69,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "blogs/Go routines misuse broken business.md",
+                "file": "blogs/Go routines misuse broken production impacting customers.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Go routines misuse broken business"
+              "title": "Go routines misuse broken production impacting customers"
             }
           }
         ],
@@ -245,7 +245,7 @@
   "active": "2ae50a0de937707f",
   "lastOpenFiles": [
     "blogs/java-oom.md",
-    "blogs/Go routines misuse broken business.md",
+    "blogs/Go routines misuse broken production impacting customers.md",
     "Untitled.md",
     "blogs/The importance of Database Pool size.md",
     "documentation/Linux Networking Fundamentals and Kubernetes Networking Internals.md",
