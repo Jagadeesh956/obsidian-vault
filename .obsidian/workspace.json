@@ -242,8 +242,14 @@
       "obsidian-excalidraw-plugin:New drawing": false
     }
   },
-  "active": "2ae50a0de937707f",
+  "active": "1e637a07c2582c7e",
   "lastOpenFiles": [
+    "documentation/OSI Layer 5 - Session Layer Protocols and Technologies.md",
+    "documentation/OSI Layer 4 - Transport Layer Protocols and Technologies.md",
+    "documentation/OSI Layer 3 - Network Layer Protocols and Technologies.md",
+    "documentation/OSI Layer 2 - Data Link Layer Protocols and Technologies.md",
+    "documentation/OSI Layer 1 - Physical Layer Protocols and Technologies.md",
+    "documentation/Networking Protocols - Master Index (OSI 7-Layer Model).md",
     "blogs/The blind spots of a client-server architecture ..!!.md",
     "blogs/Production Experiences.md",
     "blogs/Kubernetes Networking.md",
@@ -266,12 +272,6 @@
     "claude/CKA vs CKAD - Deep Comparison and CKA Study Guide 1.md",
     "claude/Amazon Engineering Organization - Deep Dive 1.md",
     "claude/MultiThreading.md",
-    "claude/Amazon Engineering Organization - Deep Dive.md",
-    "claude/Remote Companies for Indian Software Engineers.md",
-    "claude/SpringBoot.md",
-    "claude/Welcome 1.md",
-    "claude/MultiThreading 1.md",
-    "claude/Python-25days 1.md",
     "claude/Untitled.canvas",
     "claude/Untitled.canvas",
     "blogs",
