@@ -1,13 +1,13 @@
 ---
 title: "The Blind Spots of a Client-Server Architecture: What I Learned at Work"
-date: 2026-06-22
+date: 2026-02-22
 tags:
   - SRE
   - Observability
   - Microservices
   - Reliability
   - Kubernetes
-summary: "Simple lessons from real production incidents where client errors did not match app logs."
+summary: Simple lessons from real production incidents where client errors did not match app logs.
 ---
 
 ## Why I started doubting our dashboards

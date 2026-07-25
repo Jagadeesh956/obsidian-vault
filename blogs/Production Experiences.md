@@ -1,6 +1,6 @@
 ---
 title: "Production Learnings: What a 4-Hour Incident Taught Me"
-date: 2026-06-22
+date: 2024-04-22
 tags:
   - SRE
   - PostgreSQL

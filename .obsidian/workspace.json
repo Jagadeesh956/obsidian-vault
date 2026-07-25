@@ -69,12 +69,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "blogs/Production Experiences.md",
+                "file": "blogs/The importance of Database Pool size.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Production Experiences"
+              "title": "The importance of Database Pool size"
             }
           }
         ],
@@ -244,6 +244,8 @@
   },
   "active": "2ae50a0de937707f",
   "lastOpenFiles": [
+    "blogs/The blind spots of a client-server architecture ..!!.md",
+    "blogs/Production Experiences.md",
     "blogs/Kubernetes Networking.md",
     "2025-01-21.md",
     "blogs/java-oom.md",
@@ -259,10 +261,8 @@
     "documentation/How Patterns Fit Problems and Algorithm Complexity.md",
     "documentation/SRE Interview Panel Guide - Questions and Expected Answers.md",
     "documents/Solving Programming Problems - From First Principles to Patterns.md",
-    "blogs/Production Experiences.md",
     "documents",
     "documentation",
-    "blogs/The blind spots of a client-server architecture ..!!.md",
     "claude/CKA vs CKAD - Deep Comparison and CKA Study Guide 1.md",
     "claude/Amazon Engineering Organization - Deep Dive 1.md",
     "claude/MultiThreading.md",
