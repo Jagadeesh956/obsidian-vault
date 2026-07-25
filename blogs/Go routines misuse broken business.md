@@ -25,5 +25,8 @@ An engineer tried to scale down all the pods of ECM in a specific zone to 0 and 
 ECM support was also reporting crashloop backoff since same time as safekey failures to cloud ops , however it was not cared much since it's not impacting entire platform or very intermittentlty happening . "No one really thought of correlated events ".
 
 
-ECM support(our team ) got paging at 12AM , showing the evidence of safekey failures stopped after scaling down ECM Pods on a specific zone . As we are not aware of this huge impact , we were fighting back with cloud ops regarding the f
+ECM support(our team ) got paging at 12AM , showing the evidence of safekey failures stopped after scaling down ECM Pods on a specific zone . As we are sure that it could happen only from external system calling us with huge number of requests, we were fighting back with cloud ops to not blame our system and figure out which system is bombarding the requests to ECM . [ platform side logging was poor on SSE related calls ], never shows in traffic similar to usual rest api calls.  After so much of discussion we convinced cloud ops to isolate our traffic to a specific zone and enable the other for safekey to debug further on this issue.
+
+We tried to see anything that can be derived from our logs , I found that SSE related failure logs are reporting way huge sometimes [ level ERROR in Opensearch dashboard manual filteration ].
+Somehow we got to know the only client who has been integrated with SSE feature and they were pulled to call , they 
 
