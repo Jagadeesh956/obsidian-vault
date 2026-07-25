@@ -11,7 +11,7 @@ Since this platform has various consumers that run their services in different t
 
 As part of providing a feature called SSE [ server sent events ] , instead of client SDKs periodically fetching config every 2min in the Go SDK, the developer pushed a change that infinitely creates a go client [ a routine ] to connect to the platform in case of failure with retries . 
 
-As the product is released , after few days a consumer implemented the SSE and released to production on some X date , deployed the service into a K8s cluster provided by organization in private cloud  . 
+As the product is released , after few days a consumer from loyalty organization implemented the SSE and released to production on some X date , deployed the service into a K8s cluster provided by organization in private cloud  . 
 
 
 
@@ -19,4 +19,11 @@ On the other side of story, a major SRB [ service restoration bridge ] arised fr
 
 The safekey team has no idea why it's happening since they haven't deployed any changes and started working with all dependent teams including the cloud operations , after few hours of debugging the cloud operations found that the istio-gateway pods are reporting liveness failures in a specific pattern matching to safekey failures  . As the gateway is shared by all the services deployed in that cluster , cloud operation teams are unable to identify what exactly is causing those failures. 
 
-Time kept moving , many teams were involved including vendor for service mesh, OCP etc to help the cloud ops to identify the issue. Multiple leaders joined the call as it's impacting business . After 18+ hours of debugging , the cloud SRE team identified that the ECM platform service that is hosted on same cluster is seeing same pattern of crashloop backoff for the pods in the zones where safekey failures , 
+Time kept moving , many teams were involved including vendor for service mesh, OCP etc to help the cloud ops to identify the issue. Multiple leaders joined the call as it's impacting business . After 18+ hours of debugging , the cloud SRE team identified that the ECM platform service that is hosted on same cluster is seeing same pattern of crashloop backoff for the pods in the zones where safekey failures , istio-gateway pods are reporting . 
+
+An engineer tried to scale down all the pods of ECM in a specific zone to 0 and safekey failures stopped . "The eureka moment", however there is no correlation between safekey and ECM . 
+ECM support was also reporting crashloop backoff since same time as safekey failures to cloud ops , however it was not cared much since it's not impacting entire platform or very intermittentlty happening . "No one really thought of correlated events ".
+
+
+ECM support(our team ) got paging at 12AM , showing the evidence of safekey failures stopped after scaling down ECM Pods on a specific zone . As we are not aware of this huge impact , we were fighting back with cloud ops regarding the f
+
