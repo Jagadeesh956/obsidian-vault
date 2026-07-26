@@ -69,12 +69,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "documentation/OSI Layer 6 - Presentation Layer Protocols and Technologies.md",
+                "file": "documentation/OSI Layer 7 - Application Layer Protocols and Technologies.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "OSI Layer 6 - Presentation Layer Protocols and Technologies"
+              "title": "OSI Layer 7 - Application Layer Protocols and Technologies"
             }
           }
         ],
@@ -244,6 +244,8 @@
   },
   "active": "2ae50a0de937707f",
   "lastOpenFiles": [
+    "documentation/OSI Layer 6 - Presentation Layer Protocols and Technologies.md",
+    "documentation/OSI Layer 7 - Application Layer Protocols and Technologies.md",
     "documentation/OSI Layer 5 - Session Layer Protocols and Technologies.md",
     "documentation/OSI Layer 4 - Transport Layer Protocols and Technologies.md",
     "documentation/OSI Layer 3 - Network Layer Protocols and Technologies.md",
@@ -251,8 +253,6 @@
     "documentation/OSI Layer 1 - Physical Layer Protocols and Technologies.md",
     "documentation/Application Connection Lifecycle - Mapping Protocols to Code.md",
     "blogs/The importance of Database Pool size.md",
-    "documentation/OSI Layer 7 - Application Layer Protocols and Technologies.md",
-    "documentation/OSI Layer 6 - Presentation Layer Protocols and Technologies.md",
     "documentation/Networking Protocols - Master Index (OSI 7-Layer Model).md",
     "blogs/The blind spots of a client-server architecture ..!!.md",
     "blogs/Production Experiences.md",
