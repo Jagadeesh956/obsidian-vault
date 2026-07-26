@@ -69,12 +69,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "documentation/Application Connection Lifecycle - Mapping Protocols to Code.md",
+                "file": "documentation/Authentication vs Authorization - History, Mechanisms, and RBAC.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Application Connection Lifecycle - Mapping Protocols to Code"
+              "title": "Authentication vs Authorization - History, Mechanisms, and RBAC"
             }
           }
         ],
@@ -244,22 +244,24 @@
   },
   "active": "2ae50a0de937707f",
   "lastOpenFiles": [
-    "documentation/Authentication vs Authorization - History, Mechanisms, and RBAC.md",
-    "documentation/Deciding Coding Patterns by Input Data Type.md",
     "documentation/How Patterns Fit Problems and Algorithm Complexity.md",
+    "documentation/Deciding Coding Patterns by Input Data Type.md",
+    "documentation/Application Connection Lifecycle - Mapping Protocols to Code.md",
+    "documentation/Algorithms Foundations - The Complete Beginner Map.md",
+    "documentation/OSI Layer 7 - Application Layer Protocols and Technologies.md",
+    "documentation/Python for Automation Interview Prep (Beginner to SRE).md",
+    "documentation/Python Packages, Keywords, and SRE Automation (with Shell + Java Comparison).md",
     "documentation/Linux Networking Fundamentals and Kubernetes Networking Internals.md",
+    "documentation/SRE Interview Panel Guide - Questions and Expected Answers.md",
+    "documentation/Authentication vs Authorization - History, Mechanisms, and RBAC.md",
     "documentation/How to Approach a Programming Problem.md",
     "documentation/OSI Layer 1 - Physical Layer Protocols and Technologies.md",
     "documentation/Networking Protocols - Master Index (OSI 7-Layer Model).md",
-    "documentation/Python Packages, Keywords, and SRE Automation (with Shell + Java Comparison).md",
-    "documentation/Python for Automation Interview Prep (Beginner to SRE).md",
-    "documentation/OSI Layer 7 - Application Layer Protocols and Technologies.md",
     "documentation/OSI Layer 6 - Presentation Layer Protocols and Technologies.md",
     "documentation/OSI Layer 5 - Session Layer Protocols and Technologies.md",
     "documentation/OSI Layer 4 - Transport Layer Protocols and Technologies.md",
     "documentation/OSI Layer 3 - Network Layer Protocols and Technologies.md",
     "documentation/OSI Layer 2 - Data Link Layer Protocols and Technologies.md",
-    "documentation/Application Connection Lifecycle - Mapping Protocols to Code.md",
     "blogs/The importance of Database Pool size.md",
     "blogs/The blind spots of a client-server architecture ..!!.md",
     "blogs/Production Experiences.md",
@@ -268,8 +270,6 @@
     "blogs/java-oom.md",
     "blogs/Go routines misuse broken production impacting customers.md",
     "Untitled.md",
-    "documentation/Algorithms Foundations - The Complete Beginner Map.md",
-    "documentation/SRE Interview Panel Guide - Questions and Expected Answers.md",
     "documents",
     "documentation",
     "claude/Untitled.canvas",
