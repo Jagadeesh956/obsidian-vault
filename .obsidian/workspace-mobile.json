@@ -11,10 +11,14 @@
             "id": "735a6416445a32a9",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "documentation/Authentication vs Authorization - History, Mechanisms, and RBAC.md",
+                "mode": "preview",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "New tab"
+              "title": "Authentication vs Authorization - History, Mechanisms, and RBAC"
             }
           }
         ]
@@ -152,6 +156,8 @@
   },
   "left-ribbon": {
     "hiddenItems": {
+      "obsidian-git:Open Git source control": false,
+      "obsidian-excalidraw-plugin:New drawing": false,
       "switcher:Open quick switcher": false,
       "graph:Open graph view": false,
       "canvas:Create new canvas": false,
@@ -162,5 +168,8 @@
     }
   },
   "active": "735a6416445a32a9",
-  "lastOpenFiles": []
+  "lastOpenFiles": [
+    "documentation/Deciding Coding Patterns by Input Data Type.md",
+    "documentation/Authentication vs Authorization - History, Mechanisms, and RBAC.md"
+  ]
 }

@@ -1,8 +1,12 @@
 ---
-title: "Deciding Coding Patterns by Input Data Type"
+title: Deciding Coding Patterns by Input Data Type
 date: 2026-07-10
-tags: [algorithms, patterns, problem-solving, data-structures]
-summary: "How the shape and properties of your input data (sorted, unsorted, linked, graph, stream, etc.) point you to the right coding pattern, with worked examples and sample inputs for each."
+tags:
+  - algorithms
+  - patterns
+  - problem-solving
+  - data-structures
+summary: How the shape and properties of your input data (sorted, unsorted, linked, graph, stream, etc.) point you to the right coding pattern, with worked examples and sample inputs for each.
 ---
 
 # Deciding Coding Patterns by Input Data Type
