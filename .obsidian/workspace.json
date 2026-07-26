@@ -244,6 +244,7 @@
   },
   "active": "2ae50a0de937707f",
   "lastOpenFiles": [
+    "documentation/Authentication vs Authorization - History, Mechanisms, and RBAC.md",
     "documentation/Deciding Coding Patterns by Input Data Type.md",
     "documentation/How Patterns Fit Problems and Algorithm Complexity.md",
     "documentation/Linux Networking Fundamentals and Kubernetes Networking Internals.md",
@@ -269,7 +270,6 @@
     "Untitled.md",
     "documentation/Algorithms Foundations - The Complete Beginner Map.md",
     "documentation/SRE Interview Panel Guide - Questions and Expected Answers.md",
-    "documents/Solving Programming Problems - From First Principles to Patterns.md",
     "documents",
     "documentation",
     "claude/Untitled.canvas",
