@@ -12,19 +12,12 @@ summary: "Visual-first guide: real flow diagrams for Dynatrace RUM from browser 
 
 ## Table of contents
 
-1. Dynatrace RUM: Full End-to-End Model (Top-Level)
-2. Why frontend monitoring is hard
-3. Why only console logs are not enough
-4. Generic RUM solution flow
-5. Dynatrace deployment identity A: Auto-injected (OneAgent)
-6. Dynatrace deployment identity B: Agentless (Cluster ActiveGate)
-7. Frontend-backend correlation path (real mechanism)
-8. JS error capture flow
-9. Slow page diagnosis flow
-10. Local/private network architecture view
-11. Validation flow (what to test in order)
-12. How pushed data is used in Dynatrace UI (dashboards, alerts, triage)
-13. Final takeaway
+1. **Dynatrace RUM: Full End-to-End Model (Top-Level)**
+2. **Why frontend monitoring is hard**
+3. **Generic RUM solution flow**
+4. **Deployment models: Auto-injected vs Agentless**
+5. **How pushed data is used in Dynatrace UI (dashboards, alerts, triage)**
+6. **Final takeaway**
 
 ## Dynatrace RUM: Full End-to-End Model (Top-Level)
 
