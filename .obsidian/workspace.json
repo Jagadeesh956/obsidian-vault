@@ -244,6 +244,7 @@
   },
   "active": "2ae50a0de937707f",
   "lastOpenFiles": [
+    "blogs/RUM for frontend monitoring, focusing on dynatrace.md",
     "documentation/How Patterns Fit Problems and Algorithm Complexity.md",
     "documentation/Deciding Coding Patterns by Input Data Type.md",
     "documentation/Application Connection Lifecycle - Mapping Protocols to Code.md",
@@ -269,7 +270,6 @@
     "2025-01-21.md",
     "blogs/java-oom.md",
     "blogs/Go routines misuse broken production impacting customers.md",
-    "Untitled.md",
     "documents",
     "documentation",
     "claude/Untitled.canvas",
