@@ -10,6 +10,22 @@ tags:
 summary: "Visual-first guide: real flow diagrams for Dynatrace RUM from browser telemetry to ActiveGate, Dynatrace backend, and dashboards."
 ---
 
+## Table of contents
+
+1. Dynatrace RUM: Full End-to-End Model (Top-Level)
+2. Why frontend monitoring is hard
+3. Why only console logs are not enough
+4. Generic RUM solution flow
+5. Dynatrace deployment identity A: Auto-injected (OneAgent)
+6. Dynatrace deployment identity B: Agentless (Cluster ActiveGate)
+7. Frontend-backend correlation path (real mechanism)
+8. JS error capture flow
+9. Slow page diagnosis flow
+10. Local/private network architecture view
+11. Validation flow (what to test in order)
+12. How pushed data is used in Dynatrace UI (dashboards, alerts, triage)
+13. Final takeaway
+
 ## Dynatrace RUM: Full End-to-End Model (Top-Level)
 
 ```mermaid
@@ -216,6 +232,53 @@ flowchart TB
 
   A --> B --> C --> D --> E --> F --> G
 ```
+
+---
+
+## How pushed data is used in Dynatrace UI (dashboards, alerts, triage)
+
+Once browser telemetry reaches Dynatrace, it becomes usable in a few practical layers.
+
+### 1) Dashboards (what teams continuously watch)
+
+| UI area | What to place | Why it matters |
+| --- | --- | --- |
+| User Experience dashboard | Apdex, LCP, INP, CLS, page load p50/p95, bounce by page | Shows if users feel the app is fast and stable |
+| JS Error dashboard | Error rate per release, top stack traces, impacted users/sessions | Quickly identifies broken frontend deployments |
+| Geography/Device dashboard | Slow pages by region, browser, device class, OS | Helps separate code issues from environment/network issues |
+| Conversion journey dashboard | Drop-off by step, action duration by funnel stage | Ties technical signals to business outcomes |
+| Frontend-to-backend dashboard | Frontend action -> backend service latency/error trend | Speeds up ownership routing during incidents |
+
+### 2) Alerts (what should wake people up)
+
+Start with low-noise, symptom-based conditions:
+
+- **UX degradation:** Apdex below threshold for N minutes on key apps.
+- **Latency regression:** p95 page load or key action duration above baseline.
+- **Error spike:** JS error rate increases x% compared to the previous baseline window.
+- **Availability symptom:** sudden rise in failed user actions (checkout/search/login).
+- **Region-specific incident:** one geography/browser pair suddenly degrades.
+
+Use burn-rate style alerting for SLO-backed journeys if possible (for example: checkout action success rate).
+
+### 3) Triage workflow in Dynatrace UI
+
+1. Open the affected application and time window.
+2. Confirm symptom panel first (Apdex, error rate, impacted users).
+3. Drill into user actions/pages with the highest impact.
+4. Pivot to distributed traces linked via Dynatrace context headers.
+5. Split issue ownership: frontend code, backend dependency, or infra/network.
+6. Validate recovery by watching the same dashboards after rollout.
+
+### 4) Recommended baseline dashboard pack for your site
+
+- **Executive health panel:** Apdex, error rate, impacted sessions.
+- **Top 10 slow actions/pages:** p95 duration and trend.
+- **Top 10 JS exceptions:** count, first seen, last seen, release version.
+- **Backend correlation panel:** action latency vs upstream service latency.
+- **Release comparison panel:** before/after deploy deltas for UX and errors.
+
+This gives both engineering and product teams a shared, objective view of frontend health.
 
 ---
 
