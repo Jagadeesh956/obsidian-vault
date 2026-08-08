@@ -14,16 +14,16 @@ summary: "Visual-first guide: real flow diagrams for Dynatrace RUM from browser 
 
 ```mermaid
 flowchart TB
-  B[End User Browser\n- Runs frontend JS\n- Captures actions, errors, timings]
-  E[Edge / Proxy / WAF / CDN]
+  B["End User Browser<br/>- Runs frontend JS<br/>- Captures actions, errors, timings"]
+  E["Edge / Proxy / WAF / CDN"]
   M{Beacon Mode}
-  O[OneAgent on your app server\nSame-origin endpoint\n/rb_<id>]
-  A[Cluster ActiveGate\nCross-origin endpoint\n/bf]
-  D[Dynatrace Backend\nSaaS or Managed]
-  R1[RUM UX Dashboards\n(Apdex, page load, user actions)]
-  R2[Error Dashboards\n(JS exceptions, impacted sessions)]
-  R3[Service Correlation Dashboards\n(frontend -> backend traces)]
-  R4[SRE Dashboards & Alerts\n(SLOs, trends, anomalies)]
+  O["OneAgent on your app server<br/>Same-origin endpoint<br/>/rb_<id>"]
+  A["Cluster ActiveGate<br/>Cross-origin endpoint<br/>/bf"]
+  D["Dynatrace Backend<br/>SaaS or Managed"]
+  R1["RUM UX Dashboards<br/>Apdex, page load, user actions"]
+  R2["Error Dashboards<br/>JS exceptions, impacted sessions"]
+  R3["Service Correlation Dashboards<br/>frontend to backend traces"]
+  R4["SRE Dashboards and Alerts<br/>SLOs, trends, anomalies"]
 
   B -->|HTTPS beacon| E --> M
   M -->|Auto-injected| O --> D
@@ -43,9 +43,9 @@ Your server usually only serves artifacts, then user experience depends on brows
 
 ```mermaid
 flowchart LR
-  S[Frontend server/CDN\nserves HTML/CSS/JS] --> U[User Browser\nexecutes app]
-  U --> X[User experience outcomes\nslow render, JS error, UI freeze]
-  X -->|not always visible in backend logs| G[Observability gap]
+  S["Frontend server/CDN<br/>serves HTML/CSS/JS"] --> U["User Browser<br/>executes app"]
+  U --> X["User experience outcomes<br/>slow render, JS error, UI freeze"]
+  X -->|not always visible in backend logs| G["Observability gap"]
 ```
 
 ---
@@ -54,11 +54,11 @@ flowchart LR
 
 ```mermaid
 flowchart TB
-  L[console.log / console.error in browser]
-  V[User DevTools only]
-  N[No centralized view]
-  C[No correlation with backend traces]
-  O[Operations blind spots]
+  L["console.log / console.error in browser"]
+  V["User DevTools only"]
+  N["No centralized view"]
+  C["No correlation with backend traces"]
+  O["Operations blind spots"]
 
   L --> V --> N
   V --> C
@@ -72,11 +72,11 @@ flowchart TB
 
 ```mermaid
 flowchart TB
-  U[Browser + RUM Agent]
-  T[Capture telemetry\npage timings, actions, errors, XHR/fetch]
-  I[Ingest endpoint]
-  P[Processing + session stitching]
-  Q[Dashboards + alerts + investigation]
+  U["Browser + RUM Agent"]
+  T["Capture telemetry<br/>page timings, actions, errors, XHR/fetch"]
+  I["Ingest endpoint"]
+  P["Processing + session stitching"]
+  Q["Dashboards + alerts + investigation"]
 
   U --> T --> I --> P --> Q
 ```
@@ -132,11 +132,11 @@ Key points:
 
 ```mermaid
 flowchart LR
-  A[Browser Action\n(click/search/checkout)] --> B[XHR/fetch request]
-  B --> C[x-dynatrace header attached]
-  C --> D[Backend service\n(OneAgent instrumented)]
-  D --> E[Backend trace tagged\nwith same dynatrace context]
-  E --> F[Dynatrace links\nfrontend action <-> backend trace]
+  A["Browser Action<br/>click/search/checkout"] --> B["XHR/fetch request"]
+  B --> C["x-dynatrace header attached"]
+  C --> D["Backend service<br/>OneAgent instrumented"]
+  D --> E["Backend trace tagged<br/>with same dynatrace context"]
+  E --> F["Dynatrace links<br/>frontend action to backend trace"]
 ```
 
 ---
@@ -145,11 +145,11 @@ flowchart LR
 
 ```mermaid
 flowchart TB
-  J[Runtime JS error / rejected promise]
-  K[RUM agent captures\nmessage + stack + URL + browser]
-  L[Beacon endpoint\n/rb_<id> or /bf]
-  M[Dynatrace error analytics]
-  N[Impacted users/pages/time windows]
+  J["Runtime JS error / rejected promise"]
+  K["RUM agent captures<br/>message + stack + URL + browser"]
+  L["Beacon endpoint<br/>/rb_<id> or /bf"]
+  M["Dynatrace error analytics"]
+  N["Impacted users/pages/time windows"]
 
   J --> K --> L --> M --> N
 ```
@@ -160,11 +160,11 @@ flowchart TB
 
 ```mermaid
 flowchart TB
-  U[User reports slow page]
-  A[RUM captures\nnavigation timing\nresource waterfall\nlong tasks]
-  B[Dynatrace breakdown\nfrontend delay vs API delay]
-  C[Owner routing\nFrontend / Backend / Infra]
-  D[Fix + verify in next user sessions]
+  U["User reports slow page"]
+  A["RUM captures<br/>navigation timing<br/>resource waterfall<br/>long tasks"]
+  B["Dynatrace breakdown<br/>frontend delay vs API delay"]
+  C["Owner routing<br/>Frontend / Backend / Infra"]
+  D["Fix + verify in next user sessions"]
 
   U --> A --> B --> C --> D
 ```
@@ -177,9 +177,9 @@ flowchart TB
 
 ```mermaid
 flowchart LR
-  B[Browser in corporate network] --> P[Corp Proxy / Egress]
-  P --> A[Dynatrace Cluster ActiveGate (SaaS side)]
-  A --> D[Dynatrace SaaS backend]
+  B["Browser in corporate network"] --> P["Corp Proxy / Egress"]
+  P --> A["Dynatrace Cluster ActiveGate (SaaS side)"]
+  A --> D["Dynatrace SaaS backend"]
 ```
 
 Needs:
@@ -191,8 +191,8 @@ Needs:
 
 ```mermaid
 flowchart LR
-  B[Browser internal] --> S[Internal app server\nOneAgent]
-  S --> M[Dynatrace Managed cluster\nprivate DNS/FQDN]
+  B["Browser internal"] --> S["Internal app server<br/>OneAgent"]
+  S --> M["Dynatrace Managed cluster<br/>private DNS/FQDN"]
 ```
 
 Needs:
@@ -206,13 +206,13 @@ Needs:
 
 ```mermaid
 flowchart TB
-  A[1. Identify mode\nauto-injected or agentless]
-  B[2. RUM JS present in page]
-  C[3. Beacon calls visible\n/rb_<id> or /bf]
-  D[4. Beacon blocked?\ncheck CORS/CSP/proxy/firewall]
-  E[5. Data visible in Dynatrace RUM UI]
-  F[6. Frontend-backend link works\n(x-dynatrace context)]
-  G[7. Dashboards + alert rules validated]
+  A["1. Identify mode<br/>auto-injected or agentless"]
+  B["2. RUM JS present in page"]
+  C["3. Beacon calls visible<br/>/rb_<id> or /bf"]
+  D["4. Beacon blocked?<br/>check CORS/CSP/proxy/firewall"]
+  E["5. Data visible in Dynatrace RUM UI"]
+  F["6. Frontend-backend link works<br/>x-dynatrace context"]
+  G["7. Dashboards + alert rules validated"]
 
   A --> B --> C --> D --> E --> F --> G
 ```
