@@ -69,12 +69,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "blogs/RUM for frontend monitoring, focusing on dynatrace.md",
+                "file": "Java World/Java Multithreading & Concurrency.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "RUM for frontend monitoring, focusing on dynatrace"
+              "title": "Java Multithreading & Concurrency"
             }
           }
         ],
@@ -244,8 +244,9 @@
   },
   "active": "2ae50a0de937707f",
   "lastOpenFiles": [
-    "documentation/Authentication vs Authorization - History, Mechanisms, and RBAC.md",
+    "Java World/Core Java and Advanced Java - Complete Learning Guide.md",
     "blogs/RUM for frontend monitoring, focusing on dynatrace.md",
+    "documentation/Authentication vs Authorization - History, Mechanisms, and RBAC.md",
     "documentation/How Patterns Fit Problems and Algorithm Complexity.md",
     "documentation/Deciding Coding Patterns by Input Data Type.md",
     "documentation/Application Connection Lifecycle - Mapping Protocols to Code.md",
@@ -269,7 +270,6 @@
     "blogs/Kubernetes Networking.md",
     "2025-01-21.md",
     "blogs/java-oom.md",
-    "blogs/Go routines misuse broken production impacting customers.md",
     "documents",
     "documentation",
     "claude/Untitled.canvas",
