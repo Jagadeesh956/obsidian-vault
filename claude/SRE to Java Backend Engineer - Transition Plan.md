@@ -154,3 +154,222 @@ No GPA line is required on an Indian tech resume unless specifically asked — o
 
 ## One last honest note
 This plan is deliberately not fast. It's real. The version of this plan that's fast is the fabricated one, and it fails in the interview room, not on the resume screen — which is a worse place to fail. Twelve weeks of honest building gets you a story that survives a staff engineer grilling you for 45 minutes. That's the actual bar at the companies worth joining.
+
+
+---
+
+## Functional Requirements — Jira-Style Stories (Incident Intelligence Platform)
+
+Format follows real sprint-ready stories: user story, acceptance criteria, data/implementation notes, and a self-validation checklist so you can grade your own work like a reviewer would.
+
+---
+
+### STORY-1: Service and Incident data model foundation
+
+**As a** platform engineer
+**I want** a normalized data model for services, incidents, and alerts
+**So that** the system has a real foundation to correlate events against
+
+**Description / how data is ingested:**
+No external ingestion yet — this story is schema-first. Define entities: `Service` (id, name, owner_team, tier), `Incident` (id, service_id, severity, status, opened_at, resolved_at, root_cause_summary), `Alert` (id, incident_id, source, raw_payload JSONB, received_at). Use Flyway/Liquibase migrations, not `hibernate.ddl-auto=update`, so schema evolution is explicit and reviewable — this is itself a signal of production maturity.
+
+**Acceptance criteria:**
+- Migrations run cleanly from empty DB via `flyway migrate` / equivalent
+- Foreign keys and indexes exist on `service_id`, `incident_id`, `status`, `opened_at`
+- Entity relationships correctly modeled (one service → many incidents → many alerts)
+- Seed script populates 5+ services and 20+ sample incidents for local dev
+
+**Validate yourself:**
+- Can you explain, out loud, why you chose JSONB for `raw_payload` instead of fixed columns? (trade-off: flexibility vs. queryability — be ready to defend it)
+- Run `EXPLAIN ANALYZE` on a query filtering by `service_id` + `status` — confirm the index is actually used, not a full table scan
+
+---
+
+### STORY-2: Alert ingestion API (external data entry point)
+
+**As an** external monitoring system (e.g., Prometheus Alertmanager, a synthetic script standing in for Dynatrace/Datadog)
+**I want** to POST alerts to a REST endpoint
+**So that** the platform has a real ingestion path, not just seeded data
+
+**Description / how data is actually ingested:**
+`POST /api/v1/alerts` accepts a JSON payload: `{service_name, severity, message, source, timestamp, metadata}`. This simulates what a real RUM/APM tool (tying back to our Dynatrace conversation) would push via webhook. Validate payload shape with Bean Validation (`@Valid`, `@NotNull`, custom severity enum). Unknown `service_name` should either auto-register a placeholder service or reject with 422 — pick one, document why in the README.
+
+**Acceptance criteria:**
+- Endpoint returns 201 with the created alert's ID on success
+- Returns 400 with a structured error body (not a stack trace) for malformed payloads
+- Alerts persist correctly linked to their service
+- Load test: endpoint handles 50 concurrent POSTs without data corruption (use a simple JMeter/k6 script)
+
+**Validate yourself:**
+- Deliberately send malformed JSON, missing fields, and an unknown service — confirm each fails predictably and safely, not with a 500
+- Can you explain what happens to your DB connection pool under the 50-concurrent-request test? Tie this back to the HikariCP timeout discussion from earlier in this vault
+
+---
+
+### STORY-3: Incident auto-creation from correlated alerts
+
+**As a** system
+**I want** to automatically open an Incident when N alerts for the same service arrive within a time window
+**So that** noisy individual alerts get grouped into an actionable incident, mirroring real correlation engines
+
+**Description:**
+Implement a correlation rule: if 3+ alerts for the same `service_id` arrive within 5 minutes, and no open incident exists for that service, create one automatically and link the alerts to it. This is genuinely the "hard part" of the whole project — it's where you demonstrate actual engineering judgment, not CRUD.
+
+**Acceptance criteria:**
+- Given 3 alerts within the window, exactly one incident is created and all 3 alerts are linked to it
+- A 4th alert within the same open incident's lifetime attaches to the existing incident, doesn't create a duplicate
+- Alerts outside the time window, or for a service with no existing open incident and only 1-2 alerts, do not trigger incident creation
+- Logic is covered by unit tests with time-based edge cases (alert at exactly the window boundary)
+
+**Validate yourself:**
+- Write a test for the boundary condition (alert #3 arrives at exactly 5:00 vs 4:59 vs 5:01) — does your logic behave the way you intended, or did you just eyeball it?
+- Explain your choice of window-tracking approach (in-memory sliding window vs. DB query with timestamp range) and its trade-off at scale
+
+---
+
+### STORY-4: Incident status lifecycle and transitions
+
+**As an** on-call engineer
+**I want** to transition an incident through OPEN → ACKNOWLEDGED → RESOLVED states with valid rules
+**So that** the system enforces real incident management discipline, not free-form status edits
+
+**Description:**
+`PATCH /api/v1/incidents/{id}/status` with a target status. Enforce a state machine: OPEN → ACKNOWLEDGED → RESOLVED only (no skipping, no going backward except explicitly allowed RESOLVED → REOPENED). Record `resolved_at` timestamp and require a `root_cause_summary` before allowing RESOLVED.
+
+**Acceptance criteria:**
+- Invalid transitions (e.g., OPEN → RESOLVED directly) return 409 Conflict with a clear message
+- RESOLVED requires a non-empty `root_cause_summary` in the request body, or the transition is rejected
+- Valid transitions update `status` and relevant timestamps correctly
+- State transition logic is isolated in its own class/method, unit-testable without spinning up the full API
+
+**Validate yourself:**
+- Can you diagram your state machine on a whiteboard in under 2 minutes if asked in an interview?
+- Did you use an enum + explicit transition map, or scattered if/else? The former is what a reviewer expects at this level — refactor if it's the latter
+
+---
+
+### STORY-5: Root-cause suggestion engine (rule-based, not ML — be honest about scope)
+
+**As an** on-call engineer
+**I want** the system to suggest a likely root cause category based on incident patterns
+**So that** I get a head start on investigation, similar to what Dynatrace's Davis AI does at a much simpler level
+
+**Description:**
+Do NOT build actual ML here — that's scope creep that will sink the whole project. Build a rule-based suggestion engine: if alerts reference specific keywords (timeout, connection refused, OOM, 5xx rate), map to a category (Network, Database, Memory, Application Error) and attach a `suggested_category` to the incident. This is honest, scoped engineering — document explicitly in the README that this is intentionally rule-based v1, with ML noted as a future direction. That honesty is itself a good interview talking point.
+
+**Acceptance criteria:**
+- Given alert text containing known keywords, the correct category is suggested
+- Unmatched text results in `category = UNKNOWN`, not a crash or empty string
+- Suggestion logic is a separate, swappable component (interface-based), so "swap in ML later" is a real architectural claim, not just a README comment
+
+**Validate yourself:**
+- Can you explain why you made this rule-based instead of pretending to do ML with three if-statements? (Answer: honesty about scope + real interfaces beats fake sophistication — this is a legitimate engineering story to tell)
+
+---
+
+### STORY-6: Authentication and authorization
+
+**As a** platform operator
+**I want** the API secured with JWT-based auth and role-based access
+**So that** only authorized users can modify incidents, while read access can be broader
+
+**Description:**
+Implement Spring Security with JWT. Two roles: `VIEWER` (read-only GET access) and `RESPONDER` (can POST alerts, PATCH incident status). Issue tokens via a simple `/auth/login` endpoint backed by a `users` table with hashed passwords (BCrypt).
+
+**Acceptance criteria:**
+- Unauthenticated requests to protected endpoints return 401
+- `VIEWER` role attempting a PATCH returns 403
+- Passwords are never stored or logged in plaintext, verify by grepping logs after a login attempt
+- Token expiry is enforced; expired token returns 401 with a clear error, not a generic failure
+
+**Validate yourself:**
+- Try to log the JWT secret or a raw password accidentally — did your logging config leak it anywhere? This is a real production mistake worth deliberately testing for
+- Explain the difference between authentication and authorization out loud, using your own endpoints as the example (ties back to the earlier vault note on this exact topic)
+
+---
+
+### STORY-7: Resilience — timeouts, retries, circuit breaker on a downstream call
+
+**As a** system
+**I want** calls to a simulated downstream dependency (e.g., a "notification service" stub) to fail safely
+**So that** the platform doesn't cascade-fail when a dependency is slow or down
+
+**Description:**
+Add a downstream call (can be a deliberately-flaky local stub service) — e.g., "notify on-call via Slack" when an incident opens. Wrap it with Resilience4j: circuit breaker, retry with exponential backoff, and an explicit timeout. This directly implements everything covered earlier in this vault about server-side timeouts and DB/downstream call cancellation — don't just copy config, be able to explain each parameter.
+
+**Acceptance criteria:**
+- When the stub service is artificially slowed beyond the configured timeout, the call fails fast rather than hanging the request thread
+- After N consecutive failures, the circuit breaker opens and subsequent calls fail immediately without hitting the stub (verify via logs/metrics)
+- Circuit breaker half-opens and recovers correctly once the stub is healthy again
+- Behavior is demonstrated with a test or a recorded terminal session, not just claimed
+
+**Validate yourself:**
+- Can you explain, from memory, the difference between what happens to the client-facing request timeout versus what happens to the actual downstream call when the circuit is open? (This is directly the client-vs-server timeout distinction from earlier in this vault — if you can't explain it cleanly here, revisit that note first)
+
+---
+
+### STORY-8: Observability — tracing, metrics, structured logs
+
+**As a** platform engineer
+**I want** distributed tracing and custom metrics on every request
+**So that** the system is debuggable the way you'd actually expect from your own SRE background
+
+**Description:**
+Add OpenTelemetry instrumentation (auto or manual spans) across the alert-ingestion → correlation → incident-creation flow. Add Micrometer custom metrics: `alerts_ingested_total`, `incidents_created_total`, `incident_resolution_duration_seconds`. Structured JSON logging with correlation/trace IDs on every log line.
+
+**Acceptance criteria:**
+- A single alert POST produces a trace showing every internal step (ingestion → correlation check → incident creation) as child spans
+- `/actuator/prometheus` (or equivalent) exposes the custom metrics correctly
+- Logs include a trace ID that matches the span ID from the trace, so a log line can be correlated back to its trace — this is the real-world mechanism, not a toy version
+- README includes a short "how I'd use this to debug a real incident" walkthrough
+
+**Validate yourself:**
+- Deliberately trigger a failure (bad payload, downstream timeout) and confirm you can find it end-to-end starting from a single trace ID — that's the actual test of whether your observability setup works, not just whether the endpoints exist
+
+---
+
+### STORY-9: Deployment to Kubernetes with CI/CD
+
+**As a** platform engineer
+**I want** the service containerized, Helm-charted, and deployed via a CI/CD pipeline
+**So that** the project demonstrates real platform ownership, not just local `mvn spring-boot:run`
+
+**Description:**
+Dockerfile (multi-stage build, non-root user, minimal base image). Helm chart with configurable replicas, resource requests/limits, readiness/liveness probes tied to your `/actuator/health` endpoint. GitHub Actions pipeline: build → test → build image → push to a registry → deploy to a local kind/minikube cluster (or document the equivalent for a cloud cluster if you have access).
+
+**Acceptance criteria:**
+- `docker build` produces a working image under a reasonable size (document the size, explain any optimization choices)
+- Helm chart deploys successfully with `helm install`, pods reach Ready state
+- Liveness/readiness probes correctly reflect real app health — kill the DB connection and confirm readiness fails appropriately rather than staying falsely green
+- CI pipeline runs on every push, fails the build if tests fail (prove this by deliberately breaking a test and pushing)
+
+**Validate yourself:**
+- Can you explain the difference between your liveness and readiness probe configuration, and justify why each threshold/timeout value is what it is? Generic copy-pasted probe config is an obvious tell to an interviewer — make sure yours reflects actual reasoning about this specific app
+
+---
+
+### STORY-10: Load testing and documented performance characteristics
+
+**As a** platform engineer
+**I want** to know how this service actually behaves under load
+**So that** I can speak to real numbers in an interview instead of vague claims
+
+**Description:**
+Run a k6 or JMeter load test against the alert-ingestion endpoint at increasing concurrency (10, 50, 100, 200 concurrent). Record p50/p95/p99 latency, error rate, and DB connection pool behavior at each level. Document where the system starts degrading and why (connection pool exhaustion? DB query time? GC pauses?).
+
+**Acceptance criteria:**
+- A load test script exists in the repo and is runnable by anyone (documented command)
+- A results table/graph exists in the README showing latency and error rate at each concurrency level
+- At least one genuine bottleneck is identified, explained, and either fixed or explicitly documented as a known limitation with a proposed fix
+- If you tune something in response (e.g., increase pool size, add caching), the before/after numbers are both recorded — this "I measured, found a problem, fixed it, measured again" loop is exactly what a senior engineer does and exactly what most portfolio projects skip
+
+**Validate yourself:**
+- This is the story most candidates skip entirely, which is exactly why doing it properly is disproportionately valuable in an interview. Can you tell a 90-second story: "at X concurrency, I saw Y degrade, I diagnosed it was Z, I changed W, and confirmed the fix with numbers"? If yes, this story alone is worth more in an interview than the other nine combined.
+
+---
+
+## How to use these 10 stories
+
+- Work them roughly in order — 1-2-3-4 form the core domain, 5 is your "smart" differentiator, 6-7-8 are the production-maturity layer, 9-10 are what actually separates this from a tutorial project.
+- Time-box each to your 12-week plan (roughly 1-1.5 stories per week, adjust as needed).
+- Treat "Validate yourself" sections as a personal Definition of Done — if you can't answer them out loud without looking at your own code, the story isn't actually done yet, it just compiles.
