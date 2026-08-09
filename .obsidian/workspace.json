@@ -83,12 +83,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "My story.md",
+                "file": "claude/SRE to Java Backend Engineer - Transition Plan.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "My story"
+              "title": "SRE to Java Backend Engineer - Transition Plan"
             }
           }
         ],
@@ -165,7 +165,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "My story.md",
+                "file": "claude/SRE to Java Backend Engineer - Transition Plan.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -175,7 +175,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for My story"
+              "title": "Backlinks for SRE to Java Backend Engineer - Transition Plan"
             }
           },
           {
@@ -258,9 +258,11 @@
   },
   "active": "1a2b0bd99bc0fd92",
   "lastOpenFiles": [
+    "blogs/The importance of Database Pool size.md",
+    "documentation/SRE Interview Panel Guide - Questions and Expected Answers.md",
+    "My story.md",
     "claude/SRE to Java Backend Engineer - Transition Plan.md",
     "Java World/Java Multithreading & Concurrency.md",
-    "My story.md",
     "Java World/Core Java and Advanced Java - Complete Learning Guide.md",
     "blogs/RUM for frontend monitoring, focusing on dynatrace.md",
     "documentation/Authentication vs Authorization - History, Mechanisms, and RBAC.md",
@@ -272,7 +274,6 @@
     "documentation/Python for Automation Interview Prep (Beginner to SRE).md",
     "documentation/Python Packages, Keywords, and SRE Automation (with Shell + Java Comparison).md",
     "documentation/Linux Networking Fundamentals and Kubernetes Networking Internals.md",
-    "documentation/SRE Interview Panel Guide - Questions and Expected Answers.md",
     "documentation/How to Approach a Programming Problem.md",
     "documentation/OSI Layer 1 - Physical Layer Protocols and Technologies.md",
     "documentation/Networking Protocols - Master Index (OSI 7-Layer Model).md",
@@ -281,7 +282,6 @@
     "documentation/OSI Layer 4 - Transport Layer Protocols and Technologies.md",
     "documentation/OSI Layer 3 - Network Layer Protocols and Technologies.md",
     "documentation/OSI Layer 2 - Data Link Layer Protocols and Technologies.md",
-    "blogs/The importance of Database Pool size.md",
     "blogs/The blind spots of a client-server architecture ..!!.md",
     "blogs/Production Experiences.md",
     "documents",
