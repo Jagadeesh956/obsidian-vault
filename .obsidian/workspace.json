@@ -76,9 +76,23 @@
               "icon": "lucide-file",
               "title": "Java Multithreading & Concurrency"
             }
+          },
+          {
+            "id": "1a2b0bd99bc0fd92",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "My story.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "My story"
+            }
           }
         ],
-        "currentTab": 4
+        "currentTab": 5
       }
     ],
     "direction": "vertical"
@@ -242,8 +256,10 @@
       "obsidian-excalidraw-plugin:New drawing": false
     }
   },
-  "active": "2ae50a0de937707f",
+  "active": "1a2b0bd99bc0fd92",
   "lastOpenFiles": [
+    "Java World/Java Multithreading & Concurrency.md",
+    "My story.md",
     "Java World/Core Java and Advanced Java - Complete Learning Guide.md",
     "blogs/RUM for frontend monitoring, focusing on dynatrace.md",
     "documentation/Authentication vs Authorization - History, Mechanisms, and RBAC.md",
@@ -268,8 +284,6 @@
     "blogs/The blind spots of a client-server architecture ..!!.md",
     "blogs/Production Experiences.md",
     "blogs/Kubernetes Networking.md",
-    "2025-01-21.md",
-    "blogs/java-oom.md",
     "documents",
     "documentation",
     "claude/Untitled.canvas",
