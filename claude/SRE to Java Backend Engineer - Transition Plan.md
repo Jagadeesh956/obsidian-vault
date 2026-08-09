@@ -373,3 +373,35 @@ Run a k6 or JMeter load test against the alert-ingestion endpoint at increasing 
 - Work them roughly in order — 1-2-3-4 form the core domain, 5 is your "smart" differentiator, 6-7-8 are the production-maturity layer, 9-10 are what actually separates this from a tutorial project.
 - Time-box each to your 12-week plan (roughly 1-1.5 stories per week, adjust as needed).
 - Treat "Validate yourself" sections as a personal Definition of Done — if you can't answer them out loud without looking at your own code, the story isn't actually done yet, it just compiles.
+
+
+---
+
+## Update: Real Data Ingestion Sources (replaces manual-POST-only approach in STORY-2)
+
+Decision: use REAL free data sources instead of purely synthetic/manual POSTs, so the project demonstrates a genuine ingestion pattern, not a toy.
+
+### Primary source: GitHub Webhooks (real events, official, free)
+- Register a webhook on one of your own public repos: Settings → Webhooks → Add webhook
+- Subscribe to `workflow_run` (CI failures are a legitimate real incident trigger) and optionally `issues`, `push`
+- Local dev exposure: use `smee.io` (free, purpose-built for local webhook development) or `ngrok` to forward GitHub's POSTs to your local Spring Boot app
+- Verify the `X-Hub-Signature-256` HMAC header on every incoming payload — this is a real security practice (webhook signature verification) worth explicitly implementing and documenting, not skipping
+- Map `workflow_run.conclusion == "failure"` events into your existing `Alert` model (STORY-1): `source = "github_actions"`, `raw_payload` = the webhook JSON, `service_name` = repo name
+
+### Secondary source: Self-built synthetic monitoring (zero external dependency)
+- Add a `@Scheduled` job that pings a configurable list of real public URLs (your own sites, or well-known public endpoints) every N seconds
+- Record real response time and status code; if latency exceeds a threshold or status isn't 2xx, generate an `Alert` internally — same shape as GitHub-sourced alerts, feeding the SAME correlation engine (STORY-3)
+- This mirrors exactly what Dynatrace/UptimeRobot-style synthetic monitoring does at its core, and requires no API key, no rate limits, no external dependency risk
+
+### Optional third source: Public Statuspage.io incident feeds (real historical incident data)
+- Poll `https://www.githubstatus.com/api/v2/incidents.json`, `https://www.cloudflarestatus.com/api/v2/incidents.json`, or other Statuspage-hosted companies' public APIs
+- No auth needed; good for backfilling realistic incident history data for demos/screenshots without waiting for live events to occur naturally
+
+### Why two real sources instead of one
+Having GitHub webhooks (push-based, event-driven) AND synthetic monitoring (pull-based, scheduled) hitting the same correlation pipeline demonstrates you can design an ingestion layer that abstracts over different delivery models — a real architectural decision, and a strong thing to explain in an interview: "my system accepts both push-based webhooks and pull-based polling through the same internal Alert contract."
+
+### Updated STORY-2 acceptance criteria (supersedes original manual-POST-only version)
+- A real GitHub Actions failure on your test repo produces a correctly persisted `Alert` within seconds, verified end-to-end (trigger a real CI failure, watch it land in your DB)
+- Webhook signature verification correctly rejects a forged/tampered payload (test this deliberately — send a fake payload with a wrong signature, confirm it's rejected)
+- The synthetic monitor correctly detects a deliberately broken/slow endpoint (point it at something you control and intentionally break) and generates an alert
+- Both ingestion paths converge on the same `Alert` entity and flow into the same correlation logic from STORY-3, with no source-specific branching in the correlation code itself
