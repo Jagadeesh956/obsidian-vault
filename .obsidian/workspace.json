@@ -90,9 +90,23 @@
               "icon": "lucide-file",
               "title": "SRE to Java Backend Engineer - Transition Plan"
             }
+          },
+          {
+            "id": "72234e4d47a6bbd0",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "high-quality ambient MP3 audio file.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "high-quality ambient MP3 audio file"
+            }
           }
         ],
-        "currentTab": 5
+        "currentTab": 6
       }
     ],
     "direction": "vertical"
@@ -258,10 +272,11 @@
       "obsidian-excalidraw-plugin:New drawing": false
     }
   },
-  "active": "1a2b0bd99bc0fd92",
+  "active": "72234e4d47a6bbd0",
   "lastOpenFiles": [
-    "My story.md",
     "claude/SRE to Java Backend Engineer - Transition Plan.md",
+    "high-quality ambient MP3 audio file.md",
+    "My story.md",
     "blogs/The importance of Database Pool size.md",
     "documentation/SRE Interview Panel Guide - Questions and Expected Answers.md",
     "Java World/Java Multithreading & Concurrency.md",
@@ -285,7 +300,6 @@
     "documentation/OSI Layer 3 - Network Layer Protocols and Technologies.md",
     "documentation/OSI Layer 2 - Data Link Layer Protocols and Technologies.md",
     "blogs/The blind spots of a client-server architecture ..!!.md",
-    "blogs/Production Experiences.md",
     "documents",
     "documentation",
     "claude/Untitled.canvas",
