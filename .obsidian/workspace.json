@@ -97,7 +97,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "high-quality ambient MP3 audio file.md",
+                "file": "recodings/high-quality ambient MP3 audio file.md",
                 "mode": "source",
                 "source": false
               },
@@ -274,8 +274,9 @@
   },
   "active": "72234e4d47a6bbd0",
   "lastOpenFiles": [
+    "recodings",
     "claude/SRE to Java Backend Engineer - Transition Plan.md",
-    "high-quality ambient MP3 audio file.md",
+    "recodings/high-quality ambient MP3 audio file.md",
     "My story.md",
     "blogs/The importance of Database Pool size.md",
     "documentation/SRE Interview Panel Guide - Questions and Expected Answers.md",
@@ -299,7 +300,6 @@
     "documentation/OSI Layer 4 - Transport Layer Protocols and Technologies.md",
     "documentation/OSI Layer 3 - Network Layer Protocols and Technologies.md",
     "documentation/OSI Layer 2 - Data Link Layer Protocols and Technologies.md",
-    "blogs/The blind spots of a client-server architecture ..!!.md",
     "documents",
     "documentation",
     "claude/Untitled.canvas",
