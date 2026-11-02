@@ -97,12 +97,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "recodings/high-quality ambient MP3 audio file.md",
+                "file": "recodings/Production Notes - Ambient Project Background.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "high-quality ambient MP3 audio file"
+              "title": "Production Notes - Ambient Project Background"
             }
           }
         ],
@@ -276,7 +276,7 @@
   "lastOpenFiles": [
     "recodings",
     "claude/SRE to Java Backend Engineer - Transition Plan.md",
-    "recodings/high-quality ambient MP3 audio file.md",
+    "recodings/Production Notes - Ambient Project Background.md",
     "My story.md",
     "blogs/The importance of Database Pool size.md",
     "documentation/SRE Interview Panel Guide - Questions and Expected Answers.md",
